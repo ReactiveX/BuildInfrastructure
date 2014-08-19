@@ -1,0 +1,9 @@
+buildscript {
+  repositories { jcenter() }
+
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
+  }
+}
+
+apply plugin: 'rxjava-project'
