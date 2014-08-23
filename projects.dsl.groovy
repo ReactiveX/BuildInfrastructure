@@ -1,11 +1,9 @@
 // https://github.com/eclipse/egit-github/tree/master/org.eclipse.egit.github.core
-@GrabConfig(systemClassLoader=true, initContextClassLoader=true)
 @Grab(group='org.eclipse.mylyn.github', module='org.eclipse.egit.github.core', version='2.1.5')
 
 import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.client.*
 import org.eclipse.egit.github.core.service.*
-
 import java.util.regex.Pattern
 
 // TODO Index jobs, so that customizations can be easily added
@@ -19,28 +17,34 @@ loadCredentials(props, client)
 
 def orgName = 'ReactiveX'
 def parentFolderName = loadParentFolderName(props, githubProperties)
-Pattern regex = getRepoPattern(githubProperties)
-
-// All work will be done inside this folder
 folder {
     name parentFolderName
+}
 
-    RepositoryService repoService = new RepositoryService(client);
+Pattern regex = getRepoPattern(props, githubProperties)
 
-    repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repository repo ->
+// All work will be done inside this folder
+RepositoryService repoService = new RepositoryService(client);
+
+repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repository repo ->
     def repoName = repo.name
     def description = "${repo.description} - http://github.com/$orgName/$repoName"
 
     println "Creating jobs for $repoName"
 
-    def nameBase = "${parentFolderName}/${repoName}/${repoName}"
+    def repoFolderName = "${parentFolderName}/${repoName}"
+    folder {
+        name repoFolderName
+    }
+
+    def nameBase = "${repoFolderName}/${repoName}"
     snapshot(nameBase, description, orgName, repoName, 'build-dev') // 'master')
     release(nameBase, description, orgName, repoName, 'build-dev') // 'master')
     // TODO Find github contrib group, and permission each user to the job.
     // TODO Permission global group
 
     // Pull Requests are outside of a specific branch
-    pullrequest(nameBase, description, orgName, repoName, '*' ) // Not sure what the branch should be
+    pullrequest(nameBase, description, orgName, repoName, '*') // Not sure what the branch should be
 }
 
 def String loadParentFolderName(Properties props, githubProperties) {
@@ -75,14 +79,12 @@ def loadProperties(githubProperties) {
     props
 }
 
-def getRepoPattern(githubProperties) {
-    def props
-    def repoPattern = props['repoPattern']
+Pattern getRepoPattern(Properties props, githubProperties) {
+    String repoPattern = props['repoPattern']
     if (!repoPattern) {
         throw new RuntimeException("Missing repoPattern in ${githubProperties}")
     }
-    def regex = new Pattern(repoPattern)
-    regex
+    Pattern.compile(repoPattern)
 }
 
 def base(String repoDesc, boolean linkPrivate = true) {
@@ -90,7 +92,9 @@ def base(String repoDesc, boolean linkPrivate = true) {
         description ellipsize(repoDesc, 255)
         logRotator(60,-1,-1,20)
         wrappers {
-            timeout(20)
+            timeout {
+                absolute(20)
+            }
         }
         jdk('Oracle JDK 1.7 (latest)')
         if (linkPrivate) {
@@ -101,7 +105,7 @@ def base(String repoDesc, boolean linkPrivate = true) {
                 fi
     
                 if [ ! -e $HOME/.gradle/gradle.properties ]; then
-                   ln -s /private/reactivex/gradle/gradle.properties $HOME/.gradle/gradle.properties
+                   ln -s /private/netflixoss/reactivex/gradle.properties $HOME/.gradle/gradle.properties
                 fi
                 '''.stripIndent())
             }
