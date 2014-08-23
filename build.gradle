@@ -6,7 +6,7 @@ buildscript {
 apply plugin: 'rxjava-project'
 
 dependencies {
-    compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
+    compile(group: 'commons-io', name: 'commons-io', version: '2.4')
 }
 
     license {
