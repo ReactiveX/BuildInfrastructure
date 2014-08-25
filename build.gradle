@@ -1,7 +1,6 @@
 buildscript {
   repositories { jcenter() }
   dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.2-SNAPSHOT' }
-  dependencies { classpath 'com.netflix.nebula:nebula-publishing-plugin:1.12.11-SNAPSHOT' }
 }
 
 apply plugin: 'rxjava-project'
