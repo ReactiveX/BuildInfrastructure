@@ -110,9 +110,8 @@ def base(String repoDesc, boolean linkPrivate = true) {
                    mkdir $HOME/.gradle
                 fi
     
-                if [ ! -e $HOME/.gradle/gradle.properties ]; then
-                   ln -s /private/netflixoss/reactivex/gradle.properties $HOME/.gradle/gradle.properties
-                fi
+                rm -f $HOME/.gradle/gradle.properties
+                ln -s /private/netflixoss/reactivex/gradle.properties $HOME/.gradle/gradle.properties
                 '''.stripIndent())
             }
         }
