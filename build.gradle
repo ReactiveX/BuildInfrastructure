@@ -1,6 +1,6 @@
 buildscript {
   repositories { jcenter() }
-  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.2-SNAPSHOT' }
+  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.3' }
 }
 
 apply plugin: 'rxjava-project'
@@ -9,6 +9,6 @@ dependencies {
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
 }
 
-    license {
-        ignoreFailures = true
-    }
+license {
+    ignoreFailures = true
+}
