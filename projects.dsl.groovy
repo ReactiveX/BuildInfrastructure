@@ -96,9 +96,11 @@ def base(String repoDesc, boolean linkPrivate = true) {
         description ellipsize(repoDesc, 255)
         logRotator(60,-1,-1,20)
         wrappers {
+        /* Waiting for CloudBees
             timeout {
                 absolute(20)
             }
+            */
         }
         jdk('Oracle JDK 1.7 (latest)')
         if (linkPrivate) {
