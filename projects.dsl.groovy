@@ -17,9 +17,11 @@ loadCredentials(props, client)
 
 def orgName = 'ReactiveX'
 def parentFolderName = loadParentFolderName(props, githubProperties)
+/* Waiting on CloudBees
 folder {
     name parentFolderName
 }
+*/
 
 Pattern regex = getRepoPattern(props, githubProperties)
 
@@ -33,9 +35,11 @@ repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repo
     println "Creating jobs for $repoName"
 
     def repoFolderName = "${parentFolderName}/${repoName}"
+    /* Waiting on CloudBees
     folder {
         name repoFolderName
     }
+    */
 
     def nameBase = "${repoFolderName}/${repoName}"
     snapshot(nameBase, description, orgName, repoName, 'build-dev') // 'master')
