@@ -134,8 +134,8 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
         label 'hi-speed'
         scm {
             github("${orgName}/${repoName}", branchName, 'ssh') {
-                //it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId(gitHubCredentials)
                 it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
+                it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
             }
         }
         steps {
@@ -150,7 +150,8 @@ def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
         name "${nameBase}-snapshot"
         scm {
             github("${orgName}/${repoName}", branchName, 'ssh') {
-                it / skipTags << 'true'
+                it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
+                it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
             }
         }
         triggers {
