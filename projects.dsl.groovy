@@ -136,6 +136,7 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
             github("${orgName}/${repoName}", branchName, 'ssh') {
                 it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
                 it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
+                it / skipTags << 'true'
             }
         }
         steps {
@@ -152,6 +153,7 @@ def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
             github("${orgName}/${repoName}", branchName, 'ssh') {
                 it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
                 it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
+                it / skipTags << 'true'
             }
         }
         triggers {
