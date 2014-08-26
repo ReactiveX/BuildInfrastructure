@@ -91,7 +91,7 @@ Pattern getRepoPattern(Properties props, githubProperties) {
     Pattern.compile(repoPattern)
 }
 
-def base(String repoDesc, boolean linkPrivate = true) {
+def base(String repoDesc, String orgName, String repoName, String branchName, boolean linkPrivate = true) {
     job {
         description ellipsize(repoDesc, 255)
         logRotator(60,-1,-1,20)
@@ -103,6 +103,20 @@ def base(String repoDesc, boolean linkPrivate = true) {
             */
         }
         jdk('Oracle JDK 1.7 (latest)')
+        scm {
+            git {
+                remote {
+                    github("${orgName}/${repoName}", 'ssh')
+                    if (linkPrivate) {
+                        credentials('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
+                    }
+                }
+                if (linkPrivate) {
+                    branch(branchName)
+                    localBranch(branchName)
+                }
+            }
+        }
         if (linkPrivate) {
             steps {
                 shell('''
@@ -128,16 +142,10 @@ def base(String repoDesc, boolean linkPrivate = true) {
 }
 
 def release(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc)
+    def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-release"
         label 'hi-speed'
-        scm {
-            github("${orgName}/${repoName}", branchName, 'ssh') {
-                //it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId(gitHubCredentials)
-                it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
-            }
-        }
         steps {
             gradle('clean release --stacktrace')
         }
@@ -145,14 +153,9 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
 }
 
 def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc)
+    def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-snapshot"
-        scm {
-            github("${orgName}/${repoName}", branchName, 'ssh') {
-                it / skipTags << 'true'
-            }
-        }
         triggers {
             cron('@daily')
         }
@@ -166,14 +169,9 @@ def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
 }
 
 def pullrequest(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc, false)
+    def job = base(repoDesc, orgName, repoName, branchName, false)
     job.with {
         name "${nameBase}-pull-requests"
-        scm {
-            github("${orgName}/${repoName}", branchName, 'ssh') {
-                it / skipTags << 'true'
-            }
-        }
         steps {
             gradle('clean check --stacktrace --refresh-dependencies')
         }
