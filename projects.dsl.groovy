@@ -112,7 +112,7 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
                     it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
                     it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
                 }
-                it / skipTags << 'true'
+                it / skipTags('true')
             }
         }
         if (linkPrivate) {
@@ -175,8 +175,8 @@ def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
     }
 }
 
-def pullrequest(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc, orgName, repoName, branchName)
+def pullrequest(nameBase, repoDesc, orgName, repoName) {
+    def job = base(repoDesc, orgName, repoName, '', false)
     job.with {
         name "${nameBase}-pull-requests"
         steps {
