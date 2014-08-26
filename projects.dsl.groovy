@@ -125,7 +125,10 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
                 # Get us a tracking branch
                 git checkout $branchName || git checkout -b $branchName
                 git reset --hard origin/$branchName
-                git branch --set-upstream-to=origin/$branchName $branchName
+                # Git 1.8
+                # git branch --set-upstream-to=origin/$branchName $branchName
+                # Git 1.7
+                git branch --set-upstream $branchName origin/$branchName
                 git pull
                 """.stripIndent())
             }
