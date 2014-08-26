@@ -48,7 +48,7 @@ repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repo
     // TODO Permission global group
 
     // Pull Requests are outside of a specific branch
-    pullrequest(nameBase, description, orgName, repoName, '*') // Not sure what the branch should be
+    pullrequest(nameBase, description, orgName, repoName) // Not sure what the branch should be
 }
 
 def String loadParentFolderName(Properties props, githubProperties) {
