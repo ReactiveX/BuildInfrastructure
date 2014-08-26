@@ -91,7 +91,7 @@ Pattern getRepoPattern(Properties props, githubProperties) {
     Pattern.compile(repoPattern)
 }
 
-def base(String repoDesc, boolean linkPrivate = true) {
+def base(String repoDesc, String orgName, String repoName, String branchName, boolean linkPrivate = true) {
     job {
         description ellipsize(repoDesc, 255)
         logRotator(60,-1,-1,20)
@@ -103,16 +103,31 @@ def base(String repoDesc, boolean linkPrivate = true) {
             */
         }
         jdk('Oracle JDK 1.7 (latest)')
+        scm {
+            github("${orgName}/${repoName}", branchName, 'ssh') {
+                if (linkPrivate) {
+                    it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
+                    it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
+                }
+                it / skipTags << 'true'
+            }
+        }
         if (linkPrivate) {
             steps {
-                shell('''
-                if [ ! -d $HOME/.gradle ]; then
-                   mkdir $HOME/.gradle
+                shell("""
+                if [ ! -d \$HOME/.gradle ]; then
+                   mkdir \$HOME/.gradle
                 fi
     
-                rm -f $HOME/.gradle/gradle.properties
-                ln -s /private/netflixoss/reactivex/gradle.properties $HOME/.gradle/gradle.properties
-                '''.stripIndent())
+                rm -f \$HOME/.gradle/gradle.properties
+                ln -s /private/netflixoss/reactivex/gradle.properties \$HOME/.gradle/gradle.properties
+
+                # Get us a tracking branch
+                git checkout $branchName || git checkout -b $branchName
+                git reset --hard origin/$branchName
+                git branch --set-upstream-to=origin/$branchName $branchName
+                git pull
+                """.stripIndent())
             }
         }
         configure { project ->
@@ -128,17 +143,10 @@ def base(String repoDesc, boolean linkPrivate = true) {
 }
 
 def release(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc)
+    def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-release"
         label 'hi-speed'
-        scm {
-            github("${orgName}/${repoName}", branchName, 'ssh') {
-                it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
-                it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
-                it / skipTags << 'true'
-            }
-        }
         steps {
             gradle('clean release --stacktrace')
         }
@@ -146,16 +154,9 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
 }
 
 def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc)
+    def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-snapshot"
-        scm {
-            github("${orgName}/${repoName}", branchName, 'ssh') {
-                it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
-                it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
-                it / skipTags << 'true'
-            }
-        }
         triggers {
             cron('@daily')
         }
@@ -169,14 +170,9 @@ def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
 }
 
 def pullrequest(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc, false)
+    def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-pull-requests"
-        scm {
-            github("${orgName}/${repoName}", branchName, 'ssh') {
-                it / skipTags << 'true'
-            }
-        }
         steps {
             gradle('clean check --stacktrace --refresh-dependencies')
         }
