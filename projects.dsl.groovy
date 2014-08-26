@@ -44,6 +44,7 @@ repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repo
     def nameBase = "${repoFolderName}/${repoName}"
     snapshot(nameBase, description, orgName, repoName, 'build-dev') // 'master')
     release(nameBase, description, orgName, repoName, 'build-dev') // 'master')
+    candidate(nameBase, description, orgName, repoName, 'build-dev') // 'master')
     // TODO Find github contrib group, and permission each user to the job.
     // TODO Permission global group
 
@@ -155,6 +156,17 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
         label 'hi-speed'
         steps {
             gradle('clean release --stacktrace')
+        }
+    }
+}
+
+def candidate(nameBase, repoDesc, orgName, repoName, branchName) {
+    def job = base(repoDesc, orgName, repoName, branchName)
+    job.with {
+        name "${nameBase}-candidate"
+        label 'hi-speed'
+        steps {
+            gradle('clean candidate --stacktrace')
         }
     }
 }
