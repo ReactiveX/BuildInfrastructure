@@ -102,7 +102,7 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
             }
             */
             if (linkPrivate) {
-                sshAgent('reactivex')
+                sshAgent('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
             }
         }
         jdk('Oracle JDK 1.7 (latest)')
@@ -110,7 +110,7 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
             github("${orgName}/${repoName}", branchName, 'ssh') {
                 if (linkPrivate) {
                     it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
-                    it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('reactivex')
+                    it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
                 }
                 it / skipTags << 'true'
             }
