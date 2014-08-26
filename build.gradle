@@ -1,5 +1,6 @@
 buildscript {
   repositories { jcenter() }
+  repositories { maven { url 'http://dl.bintray.com/nebula/gradle-plugins' } }
   dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.3' }
 }
 
