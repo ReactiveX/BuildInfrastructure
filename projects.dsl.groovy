@@ -101,13 +101,16 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
                 absolute(20)
             }
             */
+            if (linkPrivate) {
+                sshAgent('reactivex')
+            }
         }
         jdk('Oracle JDK 1.7 (latest)')
         scm {
             github("${orgName}/${repoName}", branchName, 'ssh') {
                 if (linkPrivate) {
                     it / extensions / 'hudson.plugins.git.extensions.impl.LocalBranch' / localBranch(branchName)
-                    it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
+                    it / userRemoteConfigs / 'hudson.plugins.git.UserRemoteConfig' / credentialsId('reactivex')
                 }
                 it / skipTags << 'true'
             }
