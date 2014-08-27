@@ -1,6 +1,6 @@
 buildscript {
   repositories { jcenter() }
-  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.4-SNAPSHOT' }
+  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.5' }
 }
 
 description = 'Project to test rxjavap-project-plugin'
