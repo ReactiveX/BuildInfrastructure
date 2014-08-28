@@ -1,17 +1,14 @@
 buildscript {
   repositories { jcenter() }
-  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.5' }
+  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.6' }
 }
 
-description = 'Project to test rxjavap-project-plugin'
+allprojects {
+    apply plugin: 'rxjava-project'
+}
 
-apply plugin: 'rxjava-project'
-
+// This would be in the individual build.gradle for each project, if this was a multi-module build
 dependencies {
     compile 'commons-io:commons-io:2.4'
     testCompile 'junit:junit:4.10'
-}
-
-license {
-    ignoreFailures = true
 }
