@@ -21,12 +21,12 @@ folder {
     name parentFolderName
 }
 
-Pattern regex = getRepoPattern(props, githubProperties)
+List<Pattern> regexs = getRepoPattern(props, githubProperties)
 
 // All work will be done inside this folder
 RepositoryService repoService = new RepositoryService(client);
 
-repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repository repo ->
+repoService.getOrgRepositories(orgName).findAll { matchRepository(regexs, it.name) }.each { Repository repo ->
     def repoName = repo.name
     def description = "${repo.description} - http://github.com/$orgName/$repoName"
 
@@ -80,12 +80,16 @@ def loadProperties(githubProperties) {
     props
 }
 
-Pattern getRepoPattern(Properties props, githubProperties) {
+List<Pattern> getRepoPattern(Properties props, githubProperties) {
     String repoPattern = props['repoPattern']
     if (!repoPattern) {
         throw new RuntimeException("Missing repoPattern in ${githubProperties}")
     }
-    Pattern.compile(repoPattern)
+    repoPattern.tokenize(',').collect { Pattern.compile(it) }
+}
+
+boolean matchRepository(Collection<Pattern> repoRegexs, String name) {
+    repoRegexs.isEmpty() || repoRegexs.any { name =~ it }
 }
 
 def base(String repoDesc, String orgName, String repoName, String branchName, boolean linkPrivate = true) {
