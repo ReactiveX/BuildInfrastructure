@@ -17,11 +17,9 @@ loadCredentials(props, client)
 
 def orgName = 'ReactiveX'
 def parentFolderName = loadParentFolderName(props, githubProperties)
-/* Waiting on CloudBees
 folder {
     name parentFolderName
 }
-*/
 
 Pattern regex = getRepoPattern(props, githubProperties)
 
@@ -35,11 +33,9 @@ repoService.getOrgRepositories(orgName).findAll { it.name =~ regex }.each { Repo
     println "Creating jobs for $repoName"
 
     def repoFolderName = "${parentFolderName}/${repoName}"
-    /* Waiting on CloudBees
     folder {
         name repoFolderName
     }
-    */
 
     def nameBase = "${repoFolderName}/${repoName}"
     snapshot(nameBase, description, orgName, repoName, 'build-dev') // 'master')
@@ -97,11 +93,9 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
         description ellipsize(repoDesc, 255)
         logRotator(60,-1,-1,20)
         wrappers {
-        /* Waiting for CloudBees
             timeout {
                 absolute(20)
             }
-            */
             if (linkPrivate) {
                 sshAgent('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
             }
