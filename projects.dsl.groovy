@@ -38,12 +38,21 @@ repoService.getOrgRepositories(orgName).findAll { matchRepository(regexs, it.nam
     }
 
     def nameBase = "${repoFolderName}/${repoName}"
-    snapshot(nameBase, description, orgName, repoName, 'build-dev') // 'master')
-    release(nameBase, description, orgName, repoName, 'build-dev') // 'master')
-    candidate(nameBase, description, orgName, repoName, 'build-dev') // 'master')
-    // TODO Find github contrib group, and permission each user to the job.
-    // TODO Permission global group
 
+    List<RepositoryBranch> branches = repoService.getBranches(repo)
+    def gradleBranches = branches.findAll { it.name.endsWith('.x') }
+    gradleBranches.collect { RepositoryBranch branch ->
+        snapshot("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
+        release("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
+        candidate("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
+        // TODO Find github contrib group, and permission each user to the job.
+        // TODO Permission global group
+    }
+    if (gradleBranches.isEmpty()) {
+        snapshot(nameBase, description, orgName, repoName, 'master')
+        release(nameBase, description, orgName, repoName, 'master')
+        candidate(nameBase, description, orgName, repoName, 'master')
+    }
     // Pull Requests are outside of a specific branch
     pullrequest(nameBase, description, orgName, repoName) // Not sure what the branch should be
 }
