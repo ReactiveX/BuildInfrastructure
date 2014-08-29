@@ -182,6 +182,7 @@ def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
     def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-snapshot"
+        label 'hi-speed'
         triggers {
             cron('@daily')
         }
@@ -198,6 +199,7 @@ def pullrequest(nameBase, repoDesc, orgName, repoName) {
     def job = base(repoDesc, orgName, repoName, '', false)
     job.with {
         name "${nameBase}-pull-requests"
+        label 'hi-speed'
         steps {
             gradle('clean check --stacktrace --refresh-dependencies')
         }
