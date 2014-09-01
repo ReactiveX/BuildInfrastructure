@@ -4,4 +4,4 @@ jdk:
   - oraclejdk7
 
 after_success:
-	- gradle/initiate-publish.sh
+       - gradle/initiate-publish.sh
