@@ -1,7 +1,9 @@
 language: java
-
 jdk:
-  - oraclejdk7
-
+- oraclejdk7
 after_success:
-       - gradle/initiate-publish.sh
+- gradle/initiate-publish.sh
+env:
+  global:
+  - secure: cnJSPa5v+tHPRtPo53n8kxtTAi0YavPI969s4RzA4Yuwdc+MoZo8CpH7gdNcqTJlLezlw11V8d4AOgiKRTwFh9bzB/igkRpiX7bNOKH7zMq8XVlsQhMClGkUjwf+rLK/E4N/We3htYDNCrMJInOz8ipXHlgdkQvISYeGzvUmwrY=
+  - secure: Pr03Gt5rkPctnQ7M83vOcvyRYaikbEB2zKq49D2cqf4KyIvgCA/zfplaOtpl6qlzMvybUkJAJBuoCqFLWKmh4l6ost4zJyBnmCARhNKQIi77KAUMQj4DHekRhEfFObzSCAyGPnnPZuF71X9pTVLo23Lp66Lkb3aM1eAqRJtm+j0=
