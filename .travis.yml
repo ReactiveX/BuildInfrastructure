@@ -2,7 +2,7 @@ language: java
 jdk:
 - oraclejdk7
 after_success:
-- gradle/initiate-publish.sh
+- gradle/publishViaTravis.sh
 env:
   global:
   - secure: cnJSPa5v+tHPRtPo53n8kxtTAi0YavPI969s4RzA4Yuwdc+MoZo8CpH7gdNcqTJlLezlw11V8d4AOgiKRTwFh9bzB/igkRpiX7bNOKH7zMq8XVlsQhMClGkUjwf+rLK/E4N/We3htYDNCrMJInOz8ipXHlgdkQvISYeGzvUmwrY=
