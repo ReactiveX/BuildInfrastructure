@@ -1,6 +1,8 @@
 #!/bin/bash
 # This script initiates the Gradle publishing task when pushes to master occur.
 
+echo "PULL REQUEST $TRAVIS_PULL_REQUEST and Branch $TRAVIS_BRANCH"
+
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
   echo -e "Starting publish to Sonatype...\n"
 
