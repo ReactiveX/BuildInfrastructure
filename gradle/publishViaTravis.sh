@@ -2,7 +2,7 @@
 # This script will upload to Bintray. It is intended to be conditionally executed on tagged builds.
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
-  echo -e 'Starting upload to Bintray on Branch "$TRAVIS_BRANCH" and Tag "$TRAVIS_TAG" ...\n'
+  echo -e 'Starting upload to Bintray on Branch \"$TRAVIS_BRANCH\" and Tag \"$TRAVIS_TAG\" ...\n'
   
   ./gradlew candidate -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" --stacktrace
   RETVAL=$?
