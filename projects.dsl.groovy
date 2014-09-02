@@ -42,19 +42,15 @@ repoService.getOrgRepositories(orgName).findAll { matchRepository(regexs, it.nam
     List<RepositoryBranch> branches = repoService.getBranches(repo)
     def gradleBranches = branches.findAll { it.name.endsWith('.x') }
     gradleBranches.collect { RepositoryBranch branch ->
-        snapshot("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
         release("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
         candidate("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
         // TODO Find github contrib group, and permission each user to the job.
         // TODO Permission global group
     }
     if (gradleBranches.isEmpty()) {
-        snapshot(nameBase, description, orgName, repoName, 'master')
         release(nameBase, description, orgName, repoName, 'master')
         candidate(nameBase, description, orgName, repoName, 'master')
     }
-    // Pull Requests are outside of a specific branch
-    pullrequest(nameBase, description, orgName, repoName) // Not sure what the branch should be
 }
 
 def String loadParentFolderName(Properties props, githubProperties) {
@@ -174,41 +170,6 @@ def candidate(nameBase, repoDesc, orgName, repoName, branchName) {
         label 'hi-speed'
         steps {
             gradle('clean candidate --stacktrace')
-        }
-    }
-}
-
-def snapshot(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc, orgName, repoName, branchName)
-    job.with {
-        name "${nameBase}-snapshot"
-        label 'hi-speed'
-        triggers {
-            cron('@daily')
-        }
-        steps {
-            gradle('clean build snapshot --stacktrace')
-        }
-        configure { project ->
-            project / triggers / 'com.cloudbees.jenkins.GitHubPushTrigger' / spec
-        }
-    }
-}
-
-def pullrequest(nameBase, repoDesc, orgName, repoName) {
-    def job = base(repoDesc, orgName, repoName, '', false)
-    job.with {
-        name "${nameBase}-pull-requests"
-        label 'hi-speed'
-        steps {
-            gradle('clean check --stacktrace --refresh-dependencies')
-        }
-        configure { project ->
-            project / triggers / 'com.cloudbees.jenkins.plugins.github__pull.PullRequestBuildTrigger'(plugin:'github-pull-request-build@1.0-beta-2') / spec ()
-            project / 'properties' / 'com.cloudbees.jenkins.plugins.git.vmerge.JobPropertyImpl'(plugin:'git-validated-merge@3.6') / postBuildPushFailureHandler(class:'com.cloudbees.jenkins.plugins.git.vmerge.pbph.PushFailureIsFailure')
-        }
-        publishers {
-            // TODO Put pull request number in build number, $GIT_PR_NUMBER
         }
     }
 }
