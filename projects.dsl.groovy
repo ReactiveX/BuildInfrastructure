@@ -101,6 +101,7 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
     job {
         description ellipsize(repoDesc, 255)
         logRotator(60,-1,-1,20)
+        label 'hi-speed'
         wrappers {
             timeout {
                 absolute(20)
@@ -156,7 +157,6 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
     def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-release"
-        label 'hi-speed'
         steps {
             gradle('clean release --stacktrace')
         }
@@ -167,7 +167,6 @@ def candidate(nameBase, repoDesc, orgName, repoName, branchName) {
     def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-candidate"
-        label 'hi-speed'
         steps {
             gradle('clean candidate --stacktrace')
         }
