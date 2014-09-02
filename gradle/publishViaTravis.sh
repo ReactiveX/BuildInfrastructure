@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script will upload to Bintray. It is intended to be conditionally executed on tagged builds.
 
-echo -e 'Bintray Upload Script => Branch [' $TRAVIS_BRANCH ']  Tag [' $TRAVIS_TAG '] \n'
+echo -e 'Bintray Upload Script => Branch ['$TRAVIS_BRANCH']  Tag ['$TRAVIS_TAG']'
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
   echo -e 'Bintray Upload => Starting upload ...\n'
