@@ -1,19 +1,14 @@
 #!/bin/bash
-# This script initiates the Gradle publishing task when pushes to master occur.
+# This script will upload to Bintray. It is intended to be conditionally executed on tagged builds.
 
-echo "PULL REQUEST $TRAVIS_PULL_REQUEST and Branch $TRAVIS_BRANCH"
+echo -e "Starting upload to Bintray on Branch $TRAVIS_BRANCH and Tag $TRAVIS_TAG ...\n"
 
-if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
-  echo -e "Starting publish to Sonatype...\n"
+./gradlew candidate -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" --stacktrace
+RETVAL=$?
 
-  ./gradlew candidate -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" --stacktrace
-  RETVAL=$?
-
-  if [ $RETVAL -eq 0 ]; then
-    echo 'Completed publish!'
-  else
-    echo 'Publish failed.'
-    return 1
-  fi
-
+if [ $RETVAL -eq 0 ]; then
+  echo 'Completed upload!'
+else
+  echo 'Upload failed.'
+  return 1
 fi
