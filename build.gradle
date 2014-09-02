@@ -3,12 +3,13 @@ buildscript {
   dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.+' }
 }
 
-allprojects {
-    apply plugin: 'rxjava-project'
-}
+apply plugin: 'rxjava-project'
 
-// This would be in the individual build.gradle for each project, if this was a multi-module build
 dependencies {
     compile 'commons-io:commons-io:2.4'
     testCompile 'junit:junit:4.10'
 }
+
+// Multi-module projects are lightly supported.
+// * Wrap apply plugin in allprojects
+// * Put dependencies in individual build.gradle projects
