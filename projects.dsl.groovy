@@ -158,7 +158,7 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
     job.with {
         name "${nameBase}-release"
         steps {
-            gradle('clean release --stacktrace')
+            gradle('clean release --stacktrace --refresh-dependencies')
         }
     }
 }
@@ -168,7 +168,7 @@ def candidate(nameBase, repoDesc, orgName, repoName, branchName) {
     job.with {
         name "${nameBase}-candidate"
         steps {
-            gradle('clean candidate --stacktrace')
+            gradle('clean candidate --stacktrace --refresh-dependencies')
         }
     }
 }
