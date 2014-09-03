@@ -5,9 +5,6 @@ buildscript {
 
 apply plugin: 'rxjava-project'
 
-// Debugging
-buildscript.configurations.classpath.each { println it }
-
 dependencies {
     compile 'commons-io:commons-io:2.4'
     testCompile 'junit:junit:4.10'
