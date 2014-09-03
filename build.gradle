@@ -19,6 +19,7 @@ release {
         taggedStages = ['branch', 'rc'] as SortedSet
     }
 }
+
 // Multi-module projects are lightly supported.
 // * Wrap apply plugin in allprojects
 // * Put dependencies in individual build.gradle projects
