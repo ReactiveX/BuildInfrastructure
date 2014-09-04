@@ -43,13 +43,11 @@ repoService.getOrgRepositories(orgName).findAll { matchRepository(regexs, it.nam
     def gradleBranches = branches.findAll { it.name.endsWith('.x') }
     gradleBranches.collect { RepositoryBranch branch ->
         release("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
-        candidate("${nameBase}-${branch.name}", description, orgName, repoName, branch.name)
         // TODO Find github contrib group, and permission each user to the job.
         // TODO Permission global group
     }
     if (gradleBranches.isEmpty()) {
         release(nameBase, description, orgName, repoName, 'master')
-        candidate(nameBase, description, orgName, repoName, 'master')
     }
 }
 
@@ -157,18 +155,17 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
     def job = base(repoDesc, orgName, repoName, branchName)
     job.with {
         name "${nameBase}-release"
-        steps {
-            gradle('clean release --stacktrace --refresh-dependencies')
-        }
-    }
-}
 
-def candidate(nameBase, repoDesc, orgName, repoName, branchName) {
-    def job = base(repoDesc, orgName, repoName, branchName)
-    job.with {
-        name "${nameBase}-candidate"
+        parameters {
+            // Scope
+            choiceParam("scope", ["patch", "minor", "major"], "What is the scope of this change?")
+
+            // Stage
+            choiceParam("stage", ["snapshot", "candidate", "release"], "Which stage should this be published as?")
+        }
+
         steps {
-            gradle('clean candidate --stacktrace --refresh-dependencies')
+            gradle('clean $stage -Prelease.scope=$scope --stacktrace --refresh-dependencies')
         }
     }
 }
