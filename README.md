@@ -14,8 +14,8 @@ This is a template project used to test the rxjava-project-plugin.
 
 # Release
 
-The release targets are 'release', 'candidate' and 'snapshot. All of which should be called from the CloudBees jobs. 
-
-On release, by default the patch field will be incremented. To change this behavior the Jenkins job has to be reconfigured with "-Prelease.scope=major" or "-Prelease.scope=minor".
-
-On candidate, the calculated next release field will be used and appended with "-rc." with an incrementing number.
+There should be a CloudBees job for "releasing" (the act of pushing out an artifact, could be a RC or a real release). You will have to choose the scope and stage.
+Both concepts come from the gradle-git plugin. Scope refers to which part of the version number should be incremented, i.e. "<major>.<minor>.<patch>". The options 
+are "major", "minor", and "patch", and "patch" is the default.  The stage relates to where in the release cycle you're in, we define "dev", then "rc", then a final
+release. "dev" appends "-dev.#", where the number is the number of commits since the last release. "rc" appends "-rc.#", where the number is an incrementing number
+from the last "rc". Both "rc" and final will apply a tag.
