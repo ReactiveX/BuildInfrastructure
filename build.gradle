@@ -4,10 +4,13 @@ buildscript {
 }
 
 apply plugin: 'rxjava-project'
+subprojects {
+  apply plugin: 'rxjava-project'
 
-dependencies {
+  dependencies {
     compile 'commons-io:commons-io:2.4'
     testCompile 'junit:junit:4.10'
+  }
 }
 
 release {
@@ -16,7 +19,3 @@ release {
         taggedStages = ['branch', 'rc'] as SortedSet
     }
 }
-
-// Multi-module projects are lightly supported.
-// * Wrap apply plugin in allprojects
-// * Put dependencies in individual build.gradle projects

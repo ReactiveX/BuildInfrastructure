@@ -1,1 +1,5 @@
-rootProject.name='buildinfrastructure'
+rootProject.name='buildinfrastructure-root'
+
+include('sample1', 'sample2')
+project(':sample1').name = 'buidinfrastructure-sample1'
+project(':sample2').name = 'buidinfrastructure-sample2'
