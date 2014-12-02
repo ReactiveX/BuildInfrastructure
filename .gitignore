@@ -1,3 +1,4 @@
 ### Gradle template
 .gradle
 build/
+*.out
