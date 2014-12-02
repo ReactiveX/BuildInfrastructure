@@ -4,6 +4,8 @@ buildscript {
 }
 
 apply plugin: 'rxjava-project'
+bintray.pkg.repo = 'BuildTesting'
+
 
 subprojects {
   apply plugin: 'rxjava-project'
