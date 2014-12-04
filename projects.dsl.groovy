@@ -108,7 +108,7 @@ def base(String repoDesc, String orgName, String repoName, String branchName, bo
                 sshAgent('d79432e3-42d8-48df-a99f-5a3693d3b1fe')
             }
         }
-        jdk('Oracle JDK 1.7 (latest)')
+        jdk('OpenJDK 8 (latest)')
         scm {
             github("${orgName}/${repoName}", branchName, 'ssh') {
                 if (linkPrivate) {
