@@ -1,9 +1,10 @@
 buildscript {
   repositories { jcenter() }
-  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+' }
+  dependencies { classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:2.2-SNAPSHOT' }
 }
 
 apply plugin: 'rxjava-project'
+apply plugin: 'java'
 bintray.pkg.repo = 'BuildTesting'
 
 dependencies {
@@ -11,13 +12,10 @@ dependencies {
     testCompile 'junit:junit:4.10'
 }
 
-release {
-    version {
-        // Prep versions
-        taggedStages = ['branch', 'rc'] as SortedSet
-    }
-}
-
 // Multi-module projects are lightly supported.
 // * Wrap apply plugin in allprojects
 // * Put dependencies in individual build.gradle projects
+
+task printVersion << {
+    logger.lifecycle "Version is ${version}"
+}
