@@ -4,6 +4,7 @@
 import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.client.*
 import org.eclipse.egit.github.core.service.*
+import org.eclipse.egit.github.core.util.*
 import java.util.regex.Pattern
 
 // TODO Index jobs, so that customizations can be easily added
@@ -25,8 +26,12 @@ List<Pattern> regexs = getRepoPattern(props, githubProperties)
 
 // All work will be done inside this folder
 RepositoryService repoService = new RepositoryService(client);
+ContentsService contentsService = new ContentsService(client);
 
-repoService.getOrgRepositories(orgName).findAll { matchRepository(regexs, it.name) }.each { Repository repo ->
+repoService.getOrgRepositories(orgName)
+    .findAll { matchRepository(regexs, it.name) }
+    .findAll { matchGradle(contentsService, it) }
+    .each { Repository repo ->
     def repoName = repo.name
     def description = "${repo.description} - http://github.com/$orgName/$repoName"
 
@@ -95,6 +100,18 @@ boolean matchRepository(Collection<Pattern> repoRegexs, String name) {
     repoRegexs.isEmpty() || repoRegexs.any { name =~ it }
 }
 
+boolean matchGradle(ContentsService contentsService, repo, match = null) {
+    try {
+        def allContents = contentsService.getContents(repo, "build.gradle")
+        def content = allContents.iterator().next()
+        def bytes = EncodingUtils.fromBase64(content.content)
+        String str = new String(bytes, 'UTF-8');
+        return match ? str.contains(match) : true
+    } catch (Exception fnfe) { // RequestException
+        return false
+    }
+}
+
 def base(String repoDesc, String orgName, String repoName, String branchName, boolean linkPrivate = true) {
     job {
         description ellipsize(repoDesc, 255)
@@ -161,7 +178,7 @@ def release(nameBase, repoDesc, orgName, repoName, branchName) {
             choiceParam("scope", ["patch", "minor", "major"], "What is the scope of this change?")
 
             // Stage
-            choiceParam("stage", ["snapshot", "candidate", "release"], "Which stage should this be published as?")
+            choiceParam("stage", ["snapshot", "candidate", "final"], "Which stage should this be published as?")
         }
 
         steps {
