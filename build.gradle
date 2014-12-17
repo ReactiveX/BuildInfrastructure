@@ -22,4 +22,5 @@ task printVersion << {
 
 nebulaRelease {
     addReleaseBranchPattern(/\d+\.\d+\.\d+/)
+    addReleaseBranchPattern('HEAD')
 }
