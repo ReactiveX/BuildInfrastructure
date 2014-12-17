@@ -19,3 +19,7 @@ dependencies {
 task printVersion << {
     logger.lifecycle "Version is ${version}"
 }
+
+nebulaRelease {
+  addReleaseBranchPattern /\d+\.\d+\.\d+/
+}
