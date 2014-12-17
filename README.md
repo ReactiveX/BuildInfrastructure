@@ -1,5 +1,9 @@
 This is a template project used to test the rxjava-project-plugin.
 
+# Build
+
+[![Build Status](https://travis-ci.org/ReactiveX/BuildInfrastructure.svg?branch=master)](https://travis-ci.org/ReactiveX/BuildInfrastructure)
+
 # New Project
 
 * Clone some other project, TBD
