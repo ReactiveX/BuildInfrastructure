@@ -6,7 +6,7 @@ echo -e 'Bintray Upload Script => Branch ['$TRAVIS_BRANCH']  Tag ['$TRAVIS_TAG']
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
   echo -e 'Bintray Upload => Starting upload ...\n'
   
-  ./gradlew build bintrayUpload -Pversion="${TRAVIS_TAG}" -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" --stacktrace
+  ./gradlew -Prelease.useLastTag=true -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" final
   RETVAL=$?
   
   if [ $RETVAL -eq 0 ]; then
