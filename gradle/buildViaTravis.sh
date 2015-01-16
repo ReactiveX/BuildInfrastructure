@@ -7,8 +7,8 @@ echo -e 'Build Script => Branch ['$TRAVIS_BRANCH']  Tag ['$TRAVIS_TAG']'
 RETVAL=$?
 
 if [ $RETVAL -eq 0 ]; then
-  echo 'Completed upload!'
+  echo 'Completed build!'
 else
-  echo 'Upload failed.'
-  return 1
+  echo 'Build failed.'
+  false
 fi
